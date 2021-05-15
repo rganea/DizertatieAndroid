@@ -1,0 +1,39 @@
+{
+  "project_info": {
+    "project_number": "293136778795",
+    "project_id": "dizertatie-2021",
+    "storage_bucket": "dizertatie-2021.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:293136778795:android:5dd0a18fe838537c54cc6e",
+        "android_client_info": {
+          "package_name": "com.eldercare.dizertatie"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "293136778795-4fa4u8rs8q9vpklg03qu09ucuofjkm6l.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyCme0yEH6l_OIu6tTZz6Hn5sAXMfXsy4Hw"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "293136778795-4fa4u8rs8q9vpklg03qu09ucuofjkm6l.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
