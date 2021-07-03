@@ -53,7 +53,7 @@ public class LoginActivity extends AppCompatActivity {
                 }
 
                 if(TextUtils.isEmpty(password)){
-                    ETpassword.setError("Email is empty");
+                    ETpassword.setError("Password is empty");
                     return;
                 }
 

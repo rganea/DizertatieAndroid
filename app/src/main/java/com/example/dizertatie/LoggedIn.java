@@ -2,9 +2,14 @@ package com.example.dizertatie;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.core.app.NotificationCompat;
 
+import android.app.NotificationManager;
+import android.app.PendingIntent;
+import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
+import android.os.PowerManager;
 import android.util.Log;
 import android.view.View;
 import android.widget.Button;
@@ -28,7 +33,7 @@ import java.io.UnsupportedEncodingException;
 
 public class LoggedIn extends AppCompatActivity {
 
-    Button signout;
+    Button signout, btnMap;
     private FirebaseAuth auth;
 
 
@@ -39,6 +44,7 @@ public class LoggedIn extends AppCompatActivity {
         connect();
 
         signout = findViewById(R.id.btn_Signout);
+        btnMap = findViewById(R.id.btn_map);
 
         auth = FirebaseAuth.getInstance();
 
@@ -58,6 +64,14 @@ public class LoggedIn extends AppCompatActivity {
                         }
                     }
                 };
+            }
+        });
+
+        btnMap.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Intent mapIntent = new Intent(getApplicationContext(), MapsActivity.class);
+                startActivity(mapIntent);
             }
         });
     }
@@ -95,9 +109,20 @@ public class LoggedIn extends AppCompatActivity {
                             Log.d("file", message.toString());
 
                             if (topic.equals("test")) {
-                                //tt.setText(message.toString());
-                                //Toast toast = Toast.makeText(getApplicationContext(), message.toString() ,Toast.LENGTH_SHORT).show();
-                                Toast.makeText(LoggedIn.this, message.toString(), Toast.LENGTH_SHORT).show();
+                                Intent fullScreenIntent = new Intent(getApplicationContext(), LoggedIn.class);
+                                PendingIntent fullScreenPendingIntent = PendingIntent.getActivity(getApplicationContext(), 0,
+                                        fullScreenIntent, PendingIntent.FLAG_UPDATE_CURRENT);
+
+                                NotificationCompat.Builder builder = new NotificationCompat.Builder(getApplicationContext())
+                                        .setSmallIcon(R.drawable.logo)
+                                        .setContentTitle("ElderCare")
+                                        .setContentText("Emergency! See elder's location")
+                                        .setPriority(NotificationCompat.PRIORITY_HIGH)
+                                        .setFullScreenIntent(fullScreenPendingIntent, true)
+                                        .setCategory(NotificationCompat.CATEGORY_MESSAGE)
+                                        .setVisibility(NotificationCompat.VISIBILITY_PUBLIC);
+                                NotificationManager notificationManager = (NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE);
+                                notificationManager.notify(1, builder.build());
 
                             }
 
