@@ -6,6 +6,7 @@ import androidx.core.app.NotificationCompat;
 
 import android.app.NotificationManager;
 import android.app.PendingIntent;
+import android.app.TaskStackBuilder;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
@@ -97,7 +98,7 @@ public class LoggedIn extends AppCompatActivity {
                     // We are connected
                     Log.d("file", "onSuccess");
                     //publish(client,"payloadd");
-                    subscribe(client,"test");
+                    subscribe(client,"test/button");
                     client.setCallback(new MqttCallback() {
                         //TextView tt = (TextView) findViewById(R.id.tt);
                         @Override
@@ -108,19 +109,27 @@ public class LoggedIn extends AppCompatActivity {
                         public void messageArrived(String topic, MqttMessage message) throws Exception {
                             Log.d("file", message.toString());
 
-                            if (topic.equals("test")) {
+                            if (topic.equals("test/button")) {
                                 Intent fullScreenIntent = new Intent(getApplicationContext(), LoggedIn.class);
                                 PendingIntent fullScreenPendingIntent = PendingIntent.getActivity(getApplicationContext(), 0,
                                         fullScreenIntent, PendingIntent.FLAG_UPDATE_CURRENT);
+
+                                Intent intent = new Intent(getApplicationContext(), MapsActivity.class);
+                                PendingIntent pendingIntent = TaskStackBuilder.create(getApplication())
+                                        .addNextIntent(intent)
+                                        .getPendingIntent(0, PendingIntent.FLAG_UPDATE_CURRENT);
 
                                 NotificationCompat.Builder builder = new NotificationCompat.Builder(getApplicationContext())
                                         .setSmallIcon(R.drawable.logo)
                                         .setContentTitle("ElderCare")
                                         .setContentText("Emergency! See elder's location")
+                                        .setContentIntent(pendingIntent)
                                         .setPriority(NotificationCompat.PRIORITY_HIGH)
                                         .setFullScreenIntent(fullScreenPendingIntent, true)
                                         .setCategory(NotificationCompat.CATEGORY_MESSAGE)
+                                        .setAutoCancel(true)
                                         .setVisibility(NotificationCompat.VISIBILITY_PUBLIC);
+
                                 NotificationManager notificationManager = (NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE);
                                 notificationManager.notify(1, builder.build());
 

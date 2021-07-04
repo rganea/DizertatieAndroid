@@ -7,6 +7,7 @@ import android.app.NotificationManager;
 import android.app.PendingIntent;
 import android.content.Context;
 import android.content.Intent;
+import android.location.Location;
 import android.os.Bundle;
 import android.util.Log;
 
@@ -14,7 +15,10 @@ import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.OnMapReadyCallback;
 import com.google.android.gms.maps.SupportMapFragment;
+import com.google.android.gms.maps.model.BitmapDescriptorFactory;
+import com.google.android.gms.maps.model.CameraPosition;
 import com.google.android.gms.maps.model.LatLng;
+import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
 import com.example.dizertatie.databinding.ActivityMapsBinding;
 
@@ -49,6 +53,24 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
 
     }
 
+    public void onLocationChanged(Double latitude, Double longitude) {
+
+        mMap.clear();
+
+        LatLng latLng = new LatLng(latitude,longitude);
+        CameraPosition cameraPosition = new CameraPosition.Builder()
+                .target(latLng).zoom(18).build();
+
+        mMap.addMarker(new MarkerOptions()
+                .icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_MAGENTA))
+                .position(latLng)
+                .zIndex(20));
+
+        mMap.animateCamera(CameraUpdateFactory
+                .newCameraPosition(cameraPosition));
+    }
+
+
     public void connect(){
 
         String clientId = MqttClient.generateClientId();
@@ -70,7 +92,7 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
                     // We are connected
                     Log.d("file", "onSuccessGPS");
                     //publish(client,"payloadd");
-                    subscribe(client,"test/button");
+                    subscribe(client,"test");
                     client.setCallback(new MqttCallback() {
                         @Override
                         public void connectionLost(Throwable cause) {
@@ -80,15 +102,18 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
                         public void messageArrived(String topic, MqttMessage message) throws Exception {
                             //Log.d("file", message.toString());
 
-                            if (topic.equals("test/button")) {
+                            if (topic.equals("test")) {
                                 Log.d("file", "coordinates: " + new String(message.getPayload()));
                                 coordinates = message.toString();
                                 String latitude = coordinates.split("/")[0];
                                 String longitude = coordinates.split("/")[1];
-                                Log.d("file", "latitude: " + latitude);
-                                Log.d("file", "longitude: " + longitude);
 
+                                Double latituteD = Double.parseDouble(latitude);
+                                Double longituteD = Double.parseDouble(longitude);
+                                Log.d("file", "latitude: " + latituteD);
+                                Log.d("file", "longitude: " + longituteD);
 
+                                onLocationChanged(latituteD, longituteD);
                             }
                         }
                         @Override
@@ -109,6 +134,8 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
             e.printStackTrace();
         }
     }
+
+
 
     public void subscribe(MqttAndroidClient client , String topic){
         int qos = 1;
@@ -148,10 +175,10 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
         mMap = googleMap;
         connect();
 
-        Log.d("file", "THIS" + coordinates);
+        //Log.d("file", "THIS" + coordinates);
         // Add a marker in Sydney and move the camera
-        LatLng sydney = new LatLng(44.41, 26.02);
-        mMap.addMarker(new MarkerOptions().position(sydney).title("Elder's location"));
-        mMap.moveCamera(CameraUpdateFactory.newLatLng(sydney));
+        //LatLng sydney = new LatLng(44.41, 26.02);
+       // mMap.addMarker(new MarkerOptions().position(sydney).title("Elder's location"));
+        //mMap.moveCamera(CameraUpdateFactory.newLatLng(sydney));
     }
 }
