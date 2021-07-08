@@ -24,6 +24,8 @@ public class LoginActivity extends AppCompatActivity {
     EditText ETusername, ETpassword;
     Button btnLogin;
     FirebaseAuth fAuth;
+    FirebaseUser user;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -35,6 +37,8 @@ public class LoginActivity extends AppCompatActivity {
         btnLogin = findViewById(R.id.btn_login);
         FirebaseApp.initializeApp(this);
         fAuth = FirebaseAuth.getInstance();
+
+
 
         if (fAuth.getCurrentUser() != null) {
             startActivity(new Intent(LoginActivity.this, LoggedIn.class));
@@ -57,17 +61,27 @@ public class LoginActivity extends AppCompatActivity {
                     return;
                 }
 
+
                 fAuth.signInWithEmailAndPassword(username,password).addOnCompleteListener(new OnCompleteListener<AuthResult>() {
                     @Override
                     public void onComplete(@NonNull Task<AuthResult> task) {
                         if(task.isSuccessful()){
-                            Toast.makeText(LoginActivity.this, "Logged in Successfully", Toast.LENGTH_SHORT).show();
-                            startActivity(new Intent(getApplicationContext(),LoginActivity.class));
+                            user = fAuth.getCurrentUser();
+                            if(user.isEmailVerified()){
+                                startActivity(new Intent(getApplicationContext(),LoginActivity.class));
+                                Toast.makeText(LoginActivity.this, "Logged in Successfully", Toast.LENGTH_SHORT).show();
+
+                            }else{
+                                Toast.makeText(LoginActivity.this, "Please verify email", Toast.LENGTH_SHORT).show();
+                            }
                         }else {
                             Toast.makeText(LoginActivity.this, "Error ! " + task.getException().getMessage(), Toast.LENGTH_SHORT).show();
                         }
                     }
+
                 });
+
+
 
             }
         });

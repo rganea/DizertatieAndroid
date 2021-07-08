@@ -115,7 +115,7 @@ public class SignUpActivity extends AppCompatActivity {
                             }).addOnFailureListener(new OnFailureListener() {
                                 @Override
                                 public void onFailure(@NonNull Exception e) {
-                                    Log.d("failure", "onFailure: Email not sent " + e.getMessage());
+                                    Log.d("failure", "Email was not sent." + e.getMessage());
                                 }
                             });
 
@@ -135,7 +135,7 @@ public class SignUpActivity extends AppCompatActivity {
                                     Log.d("TAG", "onFailure: " + e.toString());
                                 }
                             });
-                            startActivity(new Intent(getApplicationContext(), MainActivity.class));
+                            //startActivity(new Intent(getApplicationContext(), MainActivity.class));
 
                         } else {
                             Toast.makeText(SignUpActivity.this, "Error ! " + task.getException().getMessage(), Toast.LENGTH_SHORT).show();
@@ -144,6 +144,8 @@ public class SignUpActivity extends AppCompatActivity {
 
                     }
                 });
+
+
 
             }});
     }
